@@ -1,28 +1,39 @@
 from tkinter import *
 from tkinter import ttk
 
+from logic import open_urls
+
+
 root = Tk()
 root.title("Auto Tabs")
 root.minsize(width=300, height=200)
 
-root.columnconfigure(0, weight=1)
-root.rowconfigure(0, weight=1)
-
-frm = ttk.Frame(root, padding=10)
-frm.grid(column=0, row=0, sticky=(N, W, E, S))
-
-frm.columnconfigure(0, weight=1)
-frm.rowconfigure(0, weight=1)
-
-
-ttk.Label(frm, text="Hello World!").grid(
-    column=0,
-    row=0
+class profile:
+    def __init__(self, urls, name):
+        self.name = name
+        self.urls = urls
+    
+profile = profile(
+    urls=[
+        "https://mail.google.com",
+        "https://calendar.google.com",
+        "https://github.com",
+    ],
+    name="Default Profile"
 )
 
-ttk.Button(frm, text="Quit", command=root.destroy).grid(
-    column=1,
-    row=1
-)
+profile_label = ttk.Label(
+    root,
+    text=f"Profile: {profile.name}",
+    font=("Arial", 14)
+
+).pack(pady=10)
+
+url_button = ttk.Button(
+    profile_label,
+    text="Open Tabs",
+    command=lambda: open_urls(profile.urls)
+
+).pack(pady=20)
 
 root.mainloop()
