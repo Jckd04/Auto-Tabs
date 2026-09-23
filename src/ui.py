@@ -135,8 +135,19 @@ new_profile_button = Button(
     text="New Profile",
     command=new_profile_window
 )
-new_profile_button.pack(side=BOTTOM, pady=20)
+new_profile_button.pack(pady=20)
 
+profiles = [
+    Profile(
+        urls=[
+            "https://mail.google.com",
+            "https://calendar.google.com",
+            "https://github.com",
+        ],
+        name="Default Profile",
+        bg_colour="#f0f0f0"
+    ),
+]
 
 # populate the main window with existing profiles
 for existing_profile in profiles:
