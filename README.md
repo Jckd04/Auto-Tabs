@@ -58,8 +58,8 @@ Auto-Tabs/
     └── ui.py
 ```
 
-ui.py: Creates the Tkinter windows, frames, labels and buttons
-logic.py: Loads profiles and opens URLs
-Classes.py: Defines the Profile class
-styles.py: Stores the shared UI styling values
-profiles.csv: Srores saved profiles
+- [ui.py](src/ui.py): Creates the Tkinter interface
+- [logic.py](src/logic.py): Loads profiles and opens URLs
+- [classes.py](src/classes.py): Defines the `Profile` class
+- [styles.py](src/styles.py): Stores shared UI styling values
+- [profiles.csv](profiles.csv): Stores saved profiles
