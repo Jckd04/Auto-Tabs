@@ -1,5 +1,25 @@
 # Created by Jack D on 2024-06-10
 # this file contains the UI logic for the Auto Tabs application.
+
+#import the necessary modules
+from tkinter import (
+    Tk,
+    Frame,
+    Label,
+    Button,
+    Entry,
+    Toplevel,
+    LEFT,
+    RIGHT
+)
+
+from logic import (
+    open_urls,
+    read_profiles_from_csv
+)
+
+from classes import Profile
+
 from styles import (
     PROFILE_FONT,
     PROFILE_PADDING_X,
@@ -10,12 +30,6 @@ from styles import (
     WINDOW_MIN_WIDTH,
     WINDOW_TITLE,
 )
-
-#import the necessary modules
-from tkinter import Tk, Frame, Label, Button, Entry, Toplevel, LEFT, RIGHT
-
-from logic import open_urls
-from classes import Profile
 
 def create_profile_frame(parent, profile):
     # create a frame for the profile with the specified background colour
@@ -137,17 +151,7 @@ new_profile_button = Button(
 )
 new_profile_button.pack(pady=20)
 
-profiles = [
-    Profile(
-        urls=[
-            "https://mail.google.com",
-            "https://calendar.google.com",
-            "https://github.com",
-        ],
-        name="Default Profile",
-        bg_colour="#f0f0f0"
-    ),
-]
+profiles = read_profiles_from_csv()
 
 # populate the main window with existing profiles
 for existing_profile in profiles:
