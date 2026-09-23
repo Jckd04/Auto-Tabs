@@ -37,17 +37,17 @@ python ui.py
 
 Profiles are stored in profiles.csv in the project root.
 Each row uses this format
-'''
+```
 Profile Name,url1;url2;url3,#f0f0f0
-'''
+```
 
-'''Example
+```Example
 Default Profile,https://mail.google.com;https://calendar.google.com;https://github.com,#f0f0f0
-'''
+```
 URLs are seperated by semicolons. The final value is the profile background colour as a hex.
 
 ## Project Structure
-'''
+```
 Auto-Tabs/
 ├── profiles.csv
 ├── README.md
@@ -56,7 +56,7 @@ Auto-Tabs/
     ├── logic.py
     ├── styles.py
     └── ui.py
-''''
+```
 
 ui.py: Creates the Tkinter windows, frames, labels and buttons
 logic.py: Loads profiles and opens URLs
