@@ -15,7 +15,8 @@ from tkinter import (
 
 from logic import (
     open_urls,
-    read_profiles_from_csv
+    read_profiles_from_csv,
+    write_profiles_to_csv
 )
 
 from classes import Profile
@@ -127,13 +128,14 @@ def new_profile_window():
 
         # create a new profile frame in the main window for the newly created profile
         create_profile_frame(root, new_profile)
+        write_profiles_to_csv(profiles + [new_profile])  # Save the new profile to the CSV file
         dialog.destroy()
 
     # create a button to submit the form and create the new profile
     create_profile_button = Button(
         dialog,
         text="Create Profile",
-        command=create_profile_from_form
+        command= create_profile_from_form
     )
     create_profile_button.pack(pady=WIDGET_PADDING_Y)
     
@@ -151,6 +153,7 @@ new_profile_button = Button(
 )
 new_profile_button.pack(pady=20)
 
+# populate a list of profiles by reading from the CSV file
 profiles = read_profiles_from_csv()
 
 # populate the main window with existing profiles

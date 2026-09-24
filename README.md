@@ -8,11 +8,11 @@ A small Python/Tkinter application for opening groups of URLs
 - Displays each profile in its own frame
 - Open all URLs in a profile in one button
 - Load profiles from a CSV file
+- Saving created profiles to csv
 
 #### yet to come
 
 - a colour selecter
-- Saving created profiles to csv
 - automatically launch certain pages on startup
 - editing, copying and deleting profiles
 - export as a .exe file to launch the profile via a quick search

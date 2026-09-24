@@ -28,4 +28,10 @@ def read_profiles_from_csv():
         print(f"An error occurred while reading the profiles.csv file: {e}")
     return profiles
 
+# write a function to write a list of Profile objects to a CSV file make it so that it overwrites the existing file and creates a new one if it doesn't exist 
 
+def write_profiles_to_csv(profiles):
+    with open("profiles.csv", "w", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        for profile in profiles:
+            writer.writerow([profile.name, ";".join(profile.urls), profile.bg_colour])
