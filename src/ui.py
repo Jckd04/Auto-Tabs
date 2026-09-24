@@ -10,7 +10,8 @@ from tkinter import (
     Entry,
     Toplevel,
     LEFT,
-    RIGHT
+    RIGHT,
+    colorchooser
 )
 
 from logic import (
@@ -74,6 +75,43 @@ def create_profile_frame(parent, profile):
 # function to create a window where the user can input details for a new profile
 def new_profile_window():
 
+    selected_colour = "#FFFFFF"  # default colour
+
+    def choose_colour():
+        nonlocal selected_colour
+
+        colour_code = colorchooser.askcolor(
+            title="Choose Background Colour",
+            initialcolor=selected_colour
+        )
+
+        if colour_code[1]:  # If a colour was selected
+            selected_colour = colour_code[1]
+            colour_preview.config(bg=selected_colour)
+    
+
+    # function to create a new profile from the form inputs
+    def create_profile_from_form():
+
+        # get the values from the form entries
+        name = name_entry.get()
+        urls = [
+            url.strip() for url in urls_entry.get().split(",")
+        ]
+        bg_colour = selected_colour
+
+        # create a new profile instance with the provided values
+        new_profile = Profile(
+            urls=urls,
+            name=name,
+            bg_colour=bg_colour
+        )
+
+        # create a new profile frame in the main window for the newly created profile
+        create_profile_frame(root, new_profile)
+        write_profiles_to_csv(profiles + [new_profile])  # Save the new profile to the CSV file
+        dialog.destroy()
+    
     # create a new top-level window for the new profile dialog
     dialog = Toplevel(root)
     dialog.title(f"New {WINDOW_TITLE} Profile")
@@ -106,30 +144,13 @@ def new_profile_window():
     bg_colour_label = Label(bg_colour_frame, text="Background Colour:")
     bg_colour_label.pack(side=LEFT, padx=WIDGET_PADDING_X)
 
-    bg_colour_entry = Entry(bg_colour_frame)
-    bg_colour_entry.pack(side=RIGHT, padx=WIDGET_PADDING_X)
+    colour_preview = Label(bg_colour_frame, text=selected_colour, bg=selected_colour, width=10)
+    colour_preview.pack(side=LEFT, padx=WIDGET_PADDING_X)
 
-    # function to create a new profile from the form inputs
-    def create_profile_from_form():
 
-        # get the values from the form entries
-        name = name_entry.get()
-        urls = [
-            url.strip() for url in urls_entry.get().split(",")
-        ]
-        bg_colour = bg_colour_entry.get()
 
-        # create a new profile instance with the provided values
-        new_profile = Profile(
-            urls=urls,
-            name=name,
-            bg_colour=bg_colour
-        )
-
-        # create a new profile frame in the main window for the newly created profile
-        create_profile_frame(root, new_profile)
-        write_profiles_to_csv(profiles + [new_profile])  # Save the new profile to the CSV file
-        dialog.destroy()
+    choose_colour_button = Button(bg_colour_frame, text="Choose Colour", command=choose_colour)
+    choose_colour_button.pack(side=RIGHT, padx=WIDGET_PADDING_X)
 
     # create a button to submit the form and create the new profile
     create_profile_button = Button(
@@ -138,6 +159,7 @@ def new_profile_window():
         command= create_profile_from_form
     )
     create_profile_button.pack(pady=WIDGET_PADDING_Y)
+
     
 
 # create the main application window

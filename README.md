@@ -9,10 +9,10 @@ A small Python/Tkinter application for opening groups of URLs
 - Open all URLs in a profile in one button
 - Load profiles from a CSV file
 - Saving created profiles to csv
+- a colour picker
 
 #### yet to come
 
-- a colour selecter
 - automatically launch certain pages on startup
 - editing, copying and deleting profiles
 - export as a .exe file to launch the profile via a quick search
@@ -29,7 +29,7 @@ A small Python/Tkinter application for opening groups of URLs
 
 From the project root:
 
-```Termianl
+```
 python ui.py
 ```
 
@@ -40,8 +40,8 @@ Each row uses this format
 ```
 Profile Name,url1;url2;url3,#f0f0f0
 ```
-
-```Example
+Example
+```
 Default Profile,https://mail.google.com;https://calendar.google.com;https://github.com,#f0f0f0
 ```
 URLs are seperated by semicolons. The final value is the profile background colour as a hex.
