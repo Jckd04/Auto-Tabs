@@ -17,7 +17,9 @@ from tkinter import (
 from logic import (
     open_urls,
     read_profiles_from_csv,
-    write_profiles_to_csv
+    write_profiles_to_csv,
+    delete_profile,
+    update_profile
 )
 
 from classes import (
@@ -86,7 +88,7 @@ def create_profile_frame(parent, profile):
 
     return frame
 
-# class to create a window where the user can input details for a new profile
+# class to create a window where the user can input details for a profile
 class ProfileDialog:
     def __init__(self, parent, profiles, profile=None, frame=None):
         # create a new dialog window for creating or editing a profile
@@ -140,13 +142,15 @@ class ProfileDialog:
             # create a delete button and save button
             self.delete_button = Button(
                 self.dialog,
-                text="Delete Profile"
+                text="Delete Profile",
+                command=self.delete_profile
             )
             self.delete_button.pack()
             
             self.save_button = Button(
                 self.dialog,
-                text="Save Profile"
+                text="Save Profile",
+                command=self.save_profile
             )
             self.save_button.pack()
         # Otherwise, create a create profile button
@@ -154,9 +158,9 @@ class ProfileDialog:
             self.create_button = Button(
                 self.dialog,
                 text="Create Profile",
-                command=self.create_profile
+                command=self.save_profile
             )
-        self.create_button.pack()
+            self.create_button.pack()
 
 
     def choose_colour(self):
@@ -172,7 +176,7 @@ class ProfileDialog:
                 bg=colour
             )
 
-    def create_profile(self):
+    def save_profile(self):
         name = self.name_entry.get()
         urls = [
             url.strip()
@@ -185,12 +189,23 @@ class ProfileDialog:
             bg_colour=self.selected_colour
         )
 
-        self.profiles.append(new_profile)
-        write_profiles_to_csv(self.profiles)
-        create_profile_frame(self.parent, new_profile)
+        if self.profile:
+            update_profile(self.profiles, self.profile, new_profile)
+            self.frame.destroy()
+            create_profile_frame(self.parent, new_profile)
+        else:
+            self.profiles.append(new_profile)
+            write_profiles_to_csv(self.profiles)
+            create_profile_frame(self.parent, new_profile)
 
         self.dialog.destroy()
+
+    def delete_profile(self):
+        delete_profile(self.profiles, self.profile)
+        self.frame.destroy()
+        self.dialog.destroy()
     
+
 # create the main application window
 root = Tk()
 root.title("Auto Tabs")

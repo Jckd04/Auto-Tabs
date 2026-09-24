@@ -10,11 +10,11 @@ A small Python/Tkinter application for opening groups of URLs
 - Load profiles from a CSV file
 - Saving created profiles to csv
 - a colour picker
+- editing, copying and deleting profiles
 
 #### yet to come
 
 - automatically launch certain pages on startup
-- editing, copying and deleting profiles
 - export as a .exe file to launch the profile via a quick search
 - packaged as an application
 - url validation
