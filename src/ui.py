@@ -20,7 +20,9 @@ from logic import (
     write_profiles_to_csv
 )
 
-from classes import Profile
+from classes import (
+    Profile
+)
 
 from styles import (
     PROFILE_FONT,
@@ -43,6 +45,18 @@ def create_profile_frame(parent, profile):
         fill="x",
         padx=PROFILE_PADDING_X,
         pady=PROFILE_PADDING_Y,
+    )
+
+    edit_button = Button(
+        frame,
+        text="Edit",
+        bg = profile.bg_colour,
+        command=lambda: ProfileDialog(root, profiles, profile, frame)
+    )
+    edit_button.pack(
+        side=LEFT,
+        pady=WIDGET_PADDING_Y,
+        padx=WIDGET_PADDING_X,
     )
 
     profile_label = Label(
@@ -72,96 +86,111 @@ def create_profile_frame(parent, profile):
 
     return frame
 
-# function to create a window where the user can input details for a new profile
-def new_profile_window():
+# class to create a window where the user can input details for a new profile
+class ProfileDialog:
+    def __init__(self, parent, profiles, profile=None, frame=None):
+        # create a new dialog window for creating or editing a profile
+        self.parent = parent
+        self.profiles = profiles
+        self.profile = profile
+        self.frame = frame
+        self.selected_colour = "#FFFFFF"
 
-    selected_colour = "#FFFFFF"  # default colour
+        
+        self.dialog = Toplevel(parent)
+        self.dialog.title(f"New {WINDOW_TITLE} Profile")
+        self.dialog.transient(parent)
 
-    def choose_colour():
-        nonlocal selected_colour
+        # name entry field
+        self.name_entry = Entry(self.dialog)
+        self.name_entry.pack()
 
-        colour_code = colorchooser.askcolor(
-            title="Choose Background Colour",
-            initialcolor=selected_colour
+        #url entry field
+        self.urls_entry = Entry(self.dialog)
+        self.urls_entry.pack()
+
+        # colour preview label
+        self.colour_preview = Label(
+            self.dialog,
+            text=self.selected_colour,
+            bg=self.selected_colour,
+            width=10
         )
+        self.colour_preview.pack()
 
-        if colour_code[1]:  # If a colour was selected
-            selected_colour = colour_code[1]
-            colour_preview.config(bg=selected_colour)
-    
+        self.choose_colour_button = Button(
+            self.dialog,
+            text="Choose Colour",
+            command=self.choose_colour
+        )
+        self.choose_colour_button.pack()
 
-    # function to create a new profile from the form inputs
-    def create_profile_from_form():
 
-        # get the values from the form entries
-        name = name_entry.get()
+        # if this profile already exists, create a delete button and save button and fill out the forms with the existing profile data
+        if self.profile:
+            # fill out the forms with the existing profile data
+            self.name_entry.insert(0, self.profile.name)
+            self.urls_entry.insert(0, ", ".join(self.profile.urls))
+            self.selected_colour = self.profile.bg_colour
+            self.colour_preview.config(
+                text=self.selected_colour,
+                bg=self.selected_colour
+            )
+
+            # create a delete button and save button
+            self.delete_button = Button(
+                self.dialog,
+                text="Delete Profile"
+            )
+            self.delete_button.pack()
+            
+            self.save_button = Button(
+                self.dialog,
+                text="Save Profile"
+            )
+            self.save_button.pack()
+        # Otherwise, create a create profile button
+        else:
+            self.create_button = Button(
+                self.dialog,
+                text="Create Profile",
+                command=self.create_profile
+            )
+        self.create_button.pack()
+
+
+    def choose_colour(self):
+        colour = colorchooser.askcolor(
+            title="Choose Background Colour",
+            initialcolor=self.selected_colour
+        )[1]
+
+        if colour:
+            self.selected_colour = colour
+            self.colour_preview.config(
+                text=colour,
+                bg=colour
+            )
+
+    def create_profile(self):
+        name = self.name_entry.get()
         urls = [
-            url.strip() for url in urls_entry.get().split(",")
+            url.strip()
+            for url in self.urls_entry.get().split(",")
         ]
-        bg_colour = selected_colour
 
-        # create a new profile instance with the provided values
         new_profile = Profile(
             urls=urls,
             name=name,
-            bg_colour=bg_colour
+            bg_colour=self.selected_colour
         )
 
-        # create a new profile frame in the main window for the newly created profile
-        create_profile_frame(root, new_profile)
-        write_profiles_to_csv(profiles + [new_profile])  # Save the new profile to the CSV file
-        dialog.destroy()
+        self.profiles.append(new_profile)
+        write_profiles_to_csv(self.profiles)
+        create_profile_frame(self.parent, new_profile)
+
+        self.dialog.destroy()
     
-    # create a new top-level window for the new profile dialog
-    dialog = Toplevel(root)
-    dialog.title(f"New {WINDOW_TITLE} Profile")
-    dialog.transient(root)
-
-    # Name field
-    name_frame = Frame(dialog)
-    name_frame.pack(pady=WIDGET_PADDING_Y)
-
-    name_label = Label(name_frame, text="Profile Name:")
-    name_label.pack(side=LEFT, padx=WIDGET_PADDING_X)
-
-    name_entry = Entry(name_frame)
-    name_entry.pack(side=RIGHT, padx=WIDGET_PADDING_X)
-
-    # URLs field
-    urls_frame = Frame(dialog)
-    urls_frame.pack(pady=WIDGET_PADDING_Y)
-
-    urls_label = Label(urls_frame, text="URLs (comma-separated):")
-    urls_label.pack(side=LEFT, padx=WIDGET_PADDING_X)
-
-    urls_entry = Entry(urls_frame)
-    urls_entry.pack(side=RIGHT, padx=WIDGET_PADDING_X)
-
-    # Background Colour field
-    bg_colour_frame = Frame(dialog)
-    bg_colour_frame.pack(pady=WIDGET_PADDING_Y)
-
-    bg_colour_label = Label(bg_colour_frame, text="Background Colour:")
-    bg_colour_label.pack(side=LEFT, padx=WIDGET_PADDING_X)
-
-    colour_preview = Label(bg_colour_frame, text=selected_colour, bg=selected_colour, width=10)
-    colour_preview.pack(side=LEFT, padx=WIDGET_PADDING_X)
-
-
-
-    choose_colour_button = Button(bg_colour_frame, text="Choose Colour", command=choose_colour)
-    choose_colour_button.pack(side=RIGHT, padx=WIDGET_PADDING_X)
-
-    # create a button to submit the form and create the new profile
-    create_profile_button = Button(
-        dialog,
-        text="Create Profile",
-        command= create_profile_from_form
-    )
-    create_profile_button.pack(pady=WIDGET_PADDING_Y)
-
-    
-
 # create the main application window
 root = Tk()
 root.title("Auto Tabs")
@@ -171,7 +200,7 @@ root.minsize(width=300, height=200)
 new_profile_button = Button(
     root,
     text="New Profile",
-    command=new_profile_window
+    command=lambda: ProfileDialog(root, profiles)
 )
 new_profile_button.pack(pady=20)
 
